@@ -33,7 +33,7 @@ def upload_file():
 import smtplib
 def sendemail(TEXT):
     FROM ='root'
-    TO = ["zwa@orsyp.com", "bta@orsyp.com"] # this is List of Email Ids
+    TO = ["zwa@orsyp.com", "bta@orsyp.com","dct@orsyp.com","oga@orsyp.com","rbl@orsyp.com"] # this is List of Email Ids
     SUBJECT='Warning message from SD system'
     #TEXT = "This message was sent with Python's smtplib. ..."
     print 'TEXT',TEXT
@@ -48,6 +48,9 @@ def receive_msg():
         print request.data 
 	sendemail(request.data)
     return 'msg received!'
+@app.route('/SDC/download/', methods=['GET', 'POST'])
+def download():
+
 if __name__ == '__main__':
     app.debug=True
     app.run('0.0.0.0',6000)
