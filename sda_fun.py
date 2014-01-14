@@ -37,28 +37,22 @@ def zip2send(tmp_path): # inut: the $U_TMP_PATH. read SD_temp.txt to find the ou
     subprocess.call(['rm',out, tmp_file]) # delete SD_temp.txt and output
 #zip2send('/home/temp/')
 
-import json
+#import json
 from itertools import *
 def dup2json(fi,fo,area):
-    ti='' # time inverval used
-    jd=[]
+    ti="" # time inverval used
     with open(fi, 'r') as f:
-	with open(fo, 'a') as fw:
-	    for line in f: 
-		if '===TimeFrame' in line:
-		    ti=line.split(' ')[1].split('\n')[0] # h or m, and revmoe the \n at the end
-		    ti_key='ti' + ti
-		    continue
-		list1 = [area]+line.split('\n')[0].split(',')
-		list1[2]=int(list1[2])
-		jd.append(dict(izip(['area',ti_key,'nexe'], list1)))
-	    #try:
-	    #    json.dump(da, fw)
-	    #    fw.write(",")
-	    #except UnicodeDecodeError:
-	    #    print 'bad line %s',  da
-	    json.dump(jd, fw)
-	    fw.flush()
+        with open(fo, 'a') as fw:
+            for line in f: 
+                if '===TimeFrame' in line:
+                    ti=line.split(' ')[1].split('\n')[0] # h or m, and revmoe the \n at the end
+                    ti_key='ti' + ti
+                    continue
+                list1 = [area]+line.split('\n')[0].split(',')
+                list1[2]=int(list1[2])
+                d=dict(izip(["area",ti_key,"nexe"], list1))
+                fw.write(str(d)+'\n')
+            fw.flush()
 fi='/home/temp/dup.txt'
 fo='/home/temp/dup2json.txt'
 dup2json(fi,fo,'X')

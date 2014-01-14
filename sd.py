@@ -50,6 +50,7 @@ def receive_msg():
     return 'msg received!'
 @app.route('/SDC/download/', methods=['GET', 'POST'])
 def download():
+    return 'not working yet'
 
 if __name__ == '__main__':
     app.debug=True

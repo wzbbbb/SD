@@ -7,10 +7,24 @@ nginx::resource::upstream { 'proxy':
      members => [ 'casplda02:443', ],
 }
 
-nginx::resource::vhost { "$::ipaddress":
+nginx::resource::vhost { "$::ipaddress_eth0":
     ensure => present,
     proxy  => 'https://proxy',
+    proxy_set_header => [ 'Customer-Id 88989',
+			  'User-Agent SD_TRAFFIC',
+			]
 }
+nginx::resource::vhost { "$::ipaddress_eth1":
+    ensure => present,
+    proxy  => 'https://proxy',
+    proxy_set_header => [ 'Customer-Id 88989',
+			  'User-Agent SD_TRAFFIC',
+			]
+}
+#nginx::resource::vhost { "$::ipaddress_eth2":
+#    ensure => present,
+#    proxy  => 'https://proxy',
+#}
 #    server_name =>['GW'],
 #    listen_port => 80,
     #ssl         => true,
