@@ -1,0 +1,13 @@
+/var/log/nginx/*log {
+    missingok
+    notifempty
+    sharedscripts
+    nomail
+    rotate 3
+    size=5M
+    daily
+    postrotate
+        /usr/local/nginx/sbin/nginx -s reload
+    endscript
+}
+
