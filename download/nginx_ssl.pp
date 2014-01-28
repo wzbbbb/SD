@@ -19,7 +19,11 @@ nginx::resource::vhost { "$::ipaddress_eth1":
     proxy  => 'https://proxy',
     proxy_set_header => [ 'Customer-Id 8908',
 			  'User-Agent SD_TRAFFIC',
-			]
+			],
+    listen_port => 443,
+    ssl         => true,
+    ssl_cert    => '/root/sd/server.crt',
+    ssl_key     => '/root/sd/server.key',
 }
 #nginx::resource::vhost { "$::ipaddress_eth2":
 #    ensure => present,

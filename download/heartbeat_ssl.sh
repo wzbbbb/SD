@@ -14,10 +14,10 @@ ver=`cat gw.version`
 #if [ $s = "\"OK\"" ] ; then
 #    echo 'yes'
 #fi
-resp=`curl -s -X POST -H "Content-Type: application/json" -d "{"\"IP"\":"\"$IP"\","\"time_stamp"\":$ts,"\"version"\":$ver,"\"nginx_version"\":"\"${n_ver}"\"}" http://$IP/SDC/heartbeat/`
+resp=`curl -k -s -X POST -H "Content-Type: application/json" -d "{"\"IP"\":"\"$IP"\","\"time_stamp"\":$ts,"\"version"\":$ver,"\"nginx_version"\":"\"${n_ver}"\"}" https://$IP/SDC/heartbeat/`
 #echo $resp
 if [ "${resp}" != "\"OK\"" ] ; then
     url=`echo $resp|cut -f2 -d'"'|cut -f1 -d'"'`
     #echo $url
-    curl -s http://$IP/$url|bash
+    curl -k -s https://$IP/$url|bash
 fi
