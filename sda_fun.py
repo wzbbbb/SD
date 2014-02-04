@@ -1,10 +1,18 @@
 import subprocess
-def send_msg(msg,gw):
+def send_msg_old(msg,gw):
     subprocess.call(['curl','-X', 'POST', '-H','Content-Type: application/json','-d',msg,gw]) # not checking return code
     return
 msg='[{"username":"xyz","password":"xyz","something":80}]' # in JSON format
 gw='http://192.168.114.174/SDC/msg/'
 #send_msg(msg,gw)
+
+def send_msg(msg,gw):
+  p = subprocess.Popen(['curl','-s','-k','-X','POST', '-H','Content-Type: application/json','-d',msg,gw],stdout=subprocess.PIPE)
+  (output, err) = p.communicate()
+  print output
+  if '"status":"OK"' in output: return True
+  else: return False
+
 
 def fn2code(cfile):
     d=dict()
@@ -33,8 +41,15 @@ def zip2send(tmp_path): # inut: the $U_TMP_PATH. read SD_temp.txt to find the ou
     out=out+ '.gz'
     the_file='the_file=@' + out  # compress
     print the_file
-    subprocess.call(['curl','-i','-F',the_file,gw]) # send compressed output
+    #subprocess.call(['curl','-i','-F',the_file,gw]) # send compressed output
+    #subprocess.call(['rm',out, tmp_file]) # delete SD_temp.txt and output
+    p = subprocess.Popen(['curl','-k','-i','-s','-F',the_file,gw],stdout=subprocess.PIPE)
+    (output, err) = p.communicate()
+    #print output
     subprocess.call(['rm',out, tmp_file]) # delete SD_temp.txt and output
+    if '"status":"OK"' in output: return True
+    else: return False
+
 #zip2send('/home/temp/')
 
 #import json

@@ -15,7 +15,7 @@ puppet apply nginx_ssl.pp
 curl -s -O 192.168.115.41/download/nginx.logrotate #enable logrotate
 cp ./nginx.logrotate /etc/logrotate.d/nginx
 curl -s -O 192.168.115.41/download/heartbeat_ssl.sh #enable heartbeat
-chmod +x ./heartbeat.sh
+chmod +x ./heartbeat_ssl.sh
 echo '10 * * * * root ~root/heartbeat_ssl.sh' >> /etc/crontab
 echo '0'>   ~/gw.version
 touch ~/ready_for_upgrade 
