@@ -4,7 +4,6 @@ def send_msg_old(msg,gw):
     return
 msg='[{"username":"xyz","password":"xyz","something":80}]' # in JSON format
 gw='http://192.168.114.174/SDC/msg/'
-#send_msg(msg,gw)
 
 def send_msg(msg,gw):
   p = subprocess.Popen(['curl','-s','-k','-X','POST', '-H','Content-Type: application/json','-d',msg,gw],stdout=subprocess.PIPE)
@@ -12,6 +11,7 @@ def send_msg(msg,gw):
   print output
   if '"status":"OK"' in output: return True
   else: return False
+#send_msg(msg,gw)
 
 
 def fn2code(cfile):
@@ -54,6 +54,8 @@ def zip2send(tmp_path): # inut: the $U_TMP_PATH. read SD_temp.txt to find the ou
 
 #import json
 from itertools import *
+import datetime
+
 def dup2json(fi,fo,area):
     ti="" # time inverval used
     with open(fi, 'r') as f:
@@ -64,7 +66,15 @@ def dup2json(fi,fo,area):
                     ti_key='ti' + ti
                     continue
                 list1 = [area]+line.split('\n')[0].split(',')
+		#print list1[1]
+		yyyy=int(list1[1][:4])
+		mm=int(list1[1][4:6])
+		dd=int(list1[1][6:8])
+		hh=int(list1[1][9:11])
+		min=int(list1[1][11:13])
+		list1[1]=int(datetime.datetime(yyyy,mm,dd,hh,min).strftime('%s'))
                 list1[2]=int(list1[2])
+		#print list1[1]
                 d=dict(izip(["area",ti_key,"nexe"], list1))
                 fw.write(str(d)+'\n')
             fw.flush()

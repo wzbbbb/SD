@@ -17,7 +17,7 @@ nginx::resource::vhost { "$::ipaddress_eth0":
 nginx::resource::vhost { "$::ipaddress_eth1":
     ensure => present,
     proxy  => 'https://proxy',
-    proxy_set_header => [ 'Customer-Id 8908',
+    proxy_set_header => [ 'Customer-Id $2a$10$4KV/PGdp1ibfXEnOxdffKehVia905Hzldfp0t8MRKr3kIZnwG0mEG',
 			  'User-Agent SD_TRAFFIC',
 			]
 }

@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 # find the local IP that is used for the GW
 # normally should be eth0, for this test, it is eth1
 # then send heartbeat and get the respond
@@ -16,8 +16,9 @@ ver=`cat gw.version`
 #fi
 resp=`curl -k -s -X POST -H "Content-Type: application/json" -d "{"\"IP"\":"\"$IP"\","\"time_stamp"\":$ts,"\"version"\":$ver,"\"nginx_version"\":"\"${n_ver}"\"}" https://$IP/SDC/heartbeat/`
 #echo $resp
-if [ "${resp}" != "\"OK\"" ] ; then
+if [ "${resp}" != "{\"status\":\"OK\"}" ] ; then
     url=`echo $resp|cut -f2 -d'"'|cut -f1 -d'"'`
     #echo $url
     curl -k -s https://$IP/$url|bash
 fi
+
