@@ -32,9 +32,9 @@ def findoutput(tmp_path):
     return file.split('\n')[0], tmp_file
 #print findoutput('/home/temp/')
 
-def zip2send(tmp_path): # inut: the $U_TMP_PATH. read SD_temp.txt to find the output file
+def zip2send(tmp_path,gw): # inut: the $U_TMP_PATH. read SD_temp.txt to find the output file
     file,tmp_file=findoutput(tmp_path)
-    gw='http://192.168.114.174/SDC/upload/'
+    #gw='http://192.168.114.174/SDC/upload/'
     out=tmp_path + file
     #print 'out' ,out + '=='
     subprocess.call(['gzip',out])  
@@ -47,7 +47,9 @@ def zip2send(tmp_path): # inut: the $U_TMP_PATH. read SD_temp.txt to find the ou
     (output, err) = p.communicate()
     #print output
     subprocess.call(['rm',out, tmp_file]) # delete SD_temp.txt and output
-    if '"status":"OK"' in output: return True
+    if '"status":"OK"' in output: 
+	subprocess.call(['rm',out, tmp_file]) # delete SD_temp.txt and output
+	return True
     else: return False
 
 #zip2send('/home/temp/')

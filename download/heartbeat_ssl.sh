@@ -7,7 +7,7 @@ IP=`/sbin/ifconfig  eth1|grep "inet "|cut -f2 -d":"|cut -f1 -d' '`
 ts=`date +%s`
 n_ver=`/usr/sbin/nginx -v 2>&1|cut -f2 -d'/'`
 #echo $ts
-ver=`cat gw.version`
+ver=`cat ~root/gw.version`
 #IP='192.168.114.208'
 #s=`curl -s http://$IP/SDC/`
 #echo $s
