@@ -1,0 +1,148 @@
+#!/bin/bash
+###################################################################
+#        Uncompress the most common compressed file formats
+###################################################################
+##
+# revision : 0.8.0
+# date     : 20030202
+# author   : Guy Muller (Orsyp Inc)
+# modifs   : Creation
+##
+# revision : 0.9.0
+# date     : 20030202
+# author   : Guy Muller (Orsyp Inc)
+# modifs   : Update
+#          : Management of the uxtrace results
+g_vers="0.9.0"
+g_prog=$0
+#ux_no_rm=on
+
+if [ $# -eq 0 ]
+then
+  Taz_Liste=`ls ./*.Z ./*.tar ./*.gz ./*.taz ./*.zip ./*.ZIP 2> /dev/null`
+  echo " In the directory `pwd` the following files will be uncompressed : "
+  echo "${Taz_Liste}"
+  echo "Is it OK ? (y)"
+  read l_answer
+  [ "${ReEnv:-y}" = "y" ] || exit 1
+else
+  Taz_Liste="$*"
+fi
+
+which uncompress > /dev/null 2>&1
+[ $? -eq 0 ] && ux_uncompress=uncompress
+[ $? -eq 0 ] || ux_uncompress="gzip -d"
+for Taz_File in ${Taz_Liste}
+do
+  echo ${Taz_File} | grep '\.Z$' > /dev/null 2>&1 && type=Z
+  echo ${Taz_File} | grep '\.gz$' > /dev/null 2>&1 && type=gz
+  echo ${Taz_File} | grep '\.tar$' > /dev/null 2>&1 && type=tar
+  echo ${Taz_File} | grep '\.taz$' > /dev/null 2>&1 && type=taz
+  echo ${Taz_File} | grep '\.tar\.Z$' > /dev/null 2>&1 && type=tar.Z
+  echo ${Taz_File} | grep '\.tar\.gz$' > /dev/null 2>&1 && type=tar.gz
+  echo ${Taz_File} | grep '\.zip$' > /dev/null 2>&1 && type=zip
+  echo ${Taz_File} | grep '\.ZIP$' > /dev/null 2>&1 && type=ZIP
+  case ${type} in
+   Z )
+   echo "Uncompressing ${Taz_File}"
+   uncompress ./${Taz_File}
+   ;;
+   gz )
+   echo "Uncompressing ${Taz_File}"
+   gzip -d ./${Taz_File}
+   ;;
+   tar )
+   echo "Uncompressing ${Taz_File}"
+   tar -xf ./${Taz_File}
+   echo ${Taz_File} | grep 'TMP_.*_uxtrace_' > /dev/null 2>&1
+   l_rc=$?
+   if [ ${l_rc:-1} -eq 0 ]; then
+        l_dir=`echo ${Taz_File} | sed -e 's/.*TMP_/TMP_/' | sed -e 's/\.tar$//'`
+        if [ -d ${l_dir} ]; then
+         cd ${l_dir}
+         echo "Uncompressing the first subdirectories level of the uxtrace result"
+         ${g_prog}
+         cd ..
+        fi
+   fi
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}
+   ;;
+   taz )
+   echo "Uncompressing ${Taz_File}"
+   mv ./${Taz_File} ./${Taz_File}.tar.Z
+   ${ux_uncompress} ./${Taz_File}.tar.Z
+   tar -xf ./${Taz_File}.tar
+   echo ${Taz_File} | grep 'TMP_.*_uxtrace_' > /dev/null 2>&1
+   l_rc=$?
+   if [ ${l_rc:-1} -eq 0 ]; then
+        l_dir=`echo ${Taz_File} | sed -e 's/.*TMP_/TMP_/' | sed -e 's/\.taz$//'`
+        if [ -d ${l_dir} ]; then
+         cd ${l_dir}
+         echo "Uncompressing the first subdirectories level of the uxtrace result"
+         ${g_prog}
+         cd ..
+        fi
+   fi
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}.tar
+   ;;
+   tar.Z )
+   echo "Uncompressing ${Taz_File}"
+   mv ./${Taz_File} ./${Taz_File}.tar.Z
+   ${ux_uncompress} ./${Taz_File}.tar.Z
+   tar -xf ./${Taz_File}.tar
+   echo ${Taz_File} | grep 'TMP_.*_uxtrace_' > /dev/null 2>&1
+   l_rc=$?
+   if [ ${l_rc:-1} -eq 0 ]; then
+        l_dir=`echo ${Taz_File} | sed -e 's/.*TMP_/TMP_/' | sed -e 's/\.tar\.Z$//'`
+        if [ -d ${l_dir} ]; then
+         cd ${l_dir}
+         echo "Uncompressing the first subdirectories level of the uxtrace result"
+         ${g_prog}
+         cd ..
+        fi
+   fi
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}.tar
+   ;;
+   tar.gz )
+   echo "Uncompressing ${Taz_File}"
+   mv ./${Taz_File} ./${Taz_File}.tar.gz
+   gzip -d ./${Taz_File}.tar.gz
+   tar -xf ./${Taz_File}.tar
+   l_dir=`echo ${Taz_File} | sed -e 's/.*TMP_/TMP_/' | sed -e 's/\.tar\.gz$//'`
+   echo ${Taz_File} | grep 'TMP_.*_uxtrace_' > /dev/null 2>&1
+   l_rc=$?
+   if [ ${l_rc:-1} -eq 0 ]; then
+        if [ -d ${l_dir} ]; then
+         cd ${l_dir}
+         echo "Uncompressing the first subdirectories level of the uxtrace result"
+         ${g_prog}
+         cd ..
+        fi
+   fi
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}.tar
+   ;;
+   zip )
+   echo "Uncompressing ${Taz_File}"
+   loc_dir_name=`echo ${Taz_File} | sed 's/\.'${type}'$//'`
+   mkdir ./${loc_dir_name}
+   mv ./${Taz_File} ./${loc_dir_name}/
+   cd ./${loc_dir_name}
+   unzip ./${Taz_File}
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}
+   cd ..
+   ;;
+   ZIP )
+   echo "Uncompressing ${Taz_File}"
+   loc_dir_name=`echo ${Taz_File} | sed 's/\.'${type}'$//'`
+   mkdir ./${loc_dir_name}
+   mv ./${Taz_File} ./${loc_dir_name}/
+   cd ./${loc_dir_name}
+   unzip ./${Taz_File}
+   [ ${ux_no_rm:-off} = off ] && rm ./${Taz_File}
+   cd ..
+   ;;
+   * )
+   echo "${Taz_File} file format is not supported"
+   ;;
+  esac
+done

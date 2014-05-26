@@ -24,7 +24,10 @@ puppet apply nginx_ssl.pp
 curl -s -O 192.168.115.41/download/nginx.logrotate 
 cp ./nginx.logrotate /etc/logrotate.d/nginx
 #enable heartbeat
-curl -s -O 192.168.115.41/download/heartbeat_ssl.sh 
+curl -s -O 192.168.115.41/download/heartbeat_ssl.sh_template 
+hbs='heartbeat_ssl.sh'
+hb_templ='heartbeat_ssl.sh_template'
+sed "s/192.168.114.208/$IP/" $hb_templ >$hbs
 chmod +x ./heartbeat_ssl.sh
 echo '10 * * * * root ~root/heartbeat_ssl.sh' >> /etc/crontab
 #prepare version control 

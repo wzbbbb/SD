@@ -1,0 +1,40 @@
+heat_template_version: 2013-05-23
+description: A load-balancer server
+parameters:
+  image:
+    type: string
+    description: Image used for servers
+    default: 7de6eaf2-b548-41d1-8d7a-958095f5180f
+  key_name:
+    type: string
+    description: SSH key to connect to the servers
+    default: mykey
+  flavor:
+    type: string
+    description: flavor used by the servers
+    default: DU.node
+  pool_id:
+    type: string
+    description: Pool to contact
+  user_data:
+    type: string
+    description: Server user_data
+  metadata:
+    type: json
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      flavor: {get_param: flavor}
+      image: {get_param: image}
+      key_name: {get_param: key_name}
+      metadata: {get_param: metadata}
+      networks: [{"network": 4a1e36c7-b80b-4bb0-99b2-27da0535feb4}]
+      user_data: {get_param: user_data}
+      user_data_format: RAW
+  member:
+    type: OS::Neutron::PoolMember
+    properties:
+      pool_id: {get_param: pool_id}
+      address: {get_attr: [server, first_address]}
+      protocol_port: 80

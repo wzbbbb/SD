@@ -3,7 +3,7 @@ def send_msg_old(msg,gw):
     subprocess.call(['curl','-X', 'POST', '-H','Content-Type: application/json','-d',msg,gw]) # not checking return code
     return
 msg='[{"username":"xyz","password":"xyz","something":80}]' # in JSON format
-gw='http://192.168.114.174/SDC/msg/'
+gw='https://192.168.114.174/SDC/msg/'
 
 def send_msg(msg,gw):
   p = subprocess.Popen(['curl','-s','-k','-X','POST', '-H','Content-Type: application/json','-d',msg,gw],stdout=subprocess.PIPE)
@@ -11,7 +11,7 @@ def send_msg(msg,gw):
   print output
   if '"status":"OK"' in output: return True
   else: return False
-#send_msg(msg,gw)
+send_msg(msg,gw)
 
 
 def fn2code(cfile):
@@ -80,7 +80,7 @@ def dup2json(fi,fo,area):
                 d=dict(izip(["area",ti_key,"nexe"], list1))
                 fw.write(str(d)+'\n')
             fw.flush()
-fi='/home/temp/dup.txt'
-fo='/home/temp/dup2json.txt'
-dup2json(fi,fo,'X')
+#fi='/home/temp/dup.txt'
+#fo='/home/temp/dup2json.txt'
+#dup2json(fi,fo,'X')
 
